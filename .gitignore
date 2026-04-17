@@ -32,25 +32,4 @@ go.work.sum
 # .vscode/
 
 bin
-/shared/pkg/openapi/order/v1/oas_cfg_gen.go
-/shared/pkg/openapi/order/v1/oas_client_gen.go
-/shared/pkg/openapi/order/v1/oas_handlers_gen.go
-/shared/pkg/openapi/order/v1/oas_interfaces_gen.go
-/shared/pkg/openapi/order/v1/oas_json_gen.go
-/shared/pkg/openapi/order/v1/oas_labeler_gen.go
-/shared/pkg/openapi/order/v1/oas_middleware_gen.go
-/shared/pkg/openapi/order/v1/oas_operations_gen.go
-/shared/pkg/openapi/order/v1/oas_parameters_gen.go
-/shared/pkg/openapi/order/v1/oas_request_decoders_gen.go
-/shared/pkg/openapi/order/v1/oas_request_encoders_gen.go
-/shared/pkg/openapi/order/v1/oas_response_decoders_gen.go
-/shared/pkg/openapi/order/v1/oas_response_encoders_gen.go
-/shared/pkg/openapi/order/v1/oas_router_gen.go
-/shared/pkg/openapi/order/v1/oas_schemas_gen.go
-/shared/pkg/openapi/order/v1/oas_server_gen.go
-/shared/pkg/openapi/order/v1/oas_unimplemented_gen.go
-/shared/pkg/openapi/order/v1/oas_validators_gen.go
-/shared/pkg/proto/inventory/v1/inventory.pb.go
-/shared/pkg/proto/inventory/v1/inventory_grpc.pb.go
-/shared/pkg/proto/payment/v1/payment.pb.go
-/shared/pkg/proto/payment/v1/payment_grpc.pb.go
+/shared/pkg/*
