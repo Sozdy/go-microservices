@@ -1,4 +1,3 @@
-// TODO: Поменяй имя модуля github.com/Sozdy/go-microservices/week_1 на своё и обнови все импорты
 module github.com/Sozdy/go-microservices/payment
 
 go 1.26.0

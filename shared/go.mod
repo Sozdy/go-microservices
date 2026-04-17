@@ -1,4 +1,3 @@
-// TODO: Поменяй имя модуля github.com/Sozdy/go-microservices на своё и обнови все импорты
 module github.com/Sozdy/go-microservices/shared
 
 go 1.26.0
