@@ -5,10 +5,12 @@
 
 set -e
 
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+
 echo "🧼 Форматирование кода..."
-task format
+task -d "$REPO_ROOT" format
 
 echo "🔍 Проверка линтером..."
-task lint
+task -d "$REPO_ROOT" lint
 
 echo "✅ Всё чисто!"
