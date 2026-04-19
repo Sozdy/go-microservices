@@ -11,6 +11,7 @@ service InventoryService {
   // GetPart возвращает деталь по UUID
   rpc GetPart(GetPartRequest) returns (GetPartResponse);
 
+  // ListParts возвращает список деталей с фильтрацией по типу и/или UUID
   rpc ListParts(ListPartsRequest) returns (ListPartsResponse);
 }
 
@@ -62,11 +63,13 @@ message GetPartRequest {
   string uuid = 1;
 }
 
+// Ответ на запрос получения детали
 message GetPartResponse {
   // Информация о детали
   Part part = 1;
 }
 
+// Запрос на получение списка деталей с фильтрацией по типу и/или UUID
 message ListPartsRequest {
   // Фильтр по типу (UNSPECIFIED = все детали)
   PartType part_type = 1;
@@ -75,6 +78,7 @@ message ListPartsRequest {
   repeated string uuids = 2;
 }
 
+// Ответ на запрос списка деталей
 message ListPartsResponse {
   // Список найденных деталей
   repeated Part parts = 1;

@@ -37,6 +37,7 @@ message PayOrderRequest {
   PaymentMethod payment_method = 2;
 }
 
+// Ответ на запрос оплаты заказа
 message PayOrderResponse {
   // UUID транзакции оплаты
   string transaction_uuid = 1;
