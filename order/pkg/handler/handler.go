@@ -7,6 +7,8 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 
 	orderv1 "github.com/Sozdy/go-microservices/shared/pkg/openapi/order/v1"
 	inventoryv1 "github.com/Sozdy/go-microservices/shared/pkg/proto/inventory/v1"
@@ -145,15 +147,24 @@ func (h *OrderHandler) CreateOrder(ctx context.Context, req *orderv1.CreateOrder
 		partUUIDs = append(partUUIDs, req.GetWeaponUUID().Value.String())
 	}
 
+	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
+	defer cancel()
 	partsResponse, err := h.inventoryClient.ListParts(ctx, &inventoryv1.ListPartsRequest{
 		PartType: inventoryv1.PartType_PART_TYPE_UNSPECIFIED,
 		Uuids:    partUUIDs,
 	})
 	if err != nil {
-		return &orderv1.CreateOrderNotFound{
-			Code:    http.StatusNotFound,
-			Message: "ошибка при получении деталей из InventoryService: " + err.Error(),
-		}, nil
+		st, ok := status.FromError(err)
+		if ok {
+			switch st.Code() {
+			case codes.NotFound:
+				return &orderv1.CreateOrderNotFound{Code: http.StatusNotFound, Message: err.Error()}, nil
+			case codes.InvalidArgument:
+				return &orderv1.CreateOrderBadRequest{Code: http.StatusBadRequest, Message: err.Error()}, nil
+			default:
+				return &orderv1.CreateOrderInternalServerError{Code: http.StatusInternalServerError, Message: err.Error()}, nil
+			}
+		}
 	}
 
 	// 3. Проверить stock_quantity > 0
@@ -236,12 +247,24 @@ func (h *OrderHandler) PayOrder(ctx context.Context, req *orderv1.PayOrderReques
 	}
 
 	// 3. Вызвать h.paymentClient.PayOrder для обработки платежа
+	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
+	defer cancel()
 	payOrderResponse, err := h.paymentClient.PayOrder(ctx, &paymentv1.PayOrderRequest{
 		OrderUuid:     order.OrderUUID.String(),
 		PaymentMethod: paymentMethod,
 	})
 	if err != nil {
-		return nil, err
+		st, ok := status.FromError(err)
+		if ok {
+			switch st.Code() {
+			case codes.NotFound:
+				return &orderv1.PayOrderNotFound{Code: http.StatusNotFound, Message: err.Error()}, nil
+			case codes.InvalidArgument:
+				return &orderv1.PayOrderBadRequest{Code: http.StatusBadRequest, Message: err.Error()}, nil
+			default:
+				return &orderv1.PayOrderInternalServerError{Code: http.StatusInternalServerError, Message: err.Error()}, nil
+			}
+		}
 	}
 
 	// 4. Обновить статус на PAID и сохранить transaction_uuid
@@ -252,9 +275,8 @@ func (h *OrderHandler) PayOrder(ctx context.Context, req *orderv1.PayOrderReques
 			Message: "неверный формат transaction_uuid от PaymentService",
 		}, nil
 	}
-	status := string(orderv1.OrderStatusPAID)
-
-	order.Status = status
+	orderStatus := string(orderv1.OrderStatusPAID)
+	order.Status = orderStatus
 	order.TransactionUUID = &transactionUUID
 	order.PaymentMethod = new(string(req.PaymentMethod))
 
