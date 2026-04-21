@@ -128,6 +128,6 @@ func main() {
 
 	case err := <-serveErrCh:
 		slog.Error("🛑 HTTP сервер завершился с ошибкой", "error", err)
-		panic("HTTP сервер завершился с ошибкой: " + err.Error())
+		return
 	}
 }

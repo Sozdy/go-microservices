@@ -182,12 +182,20 @@ func (h *OrderHandler) CreateOrder(ctx context.Context, req *orderv1.CreateOrder
 
 	// 5. Сгенерировать order_uuid (UUID v4)
 	orderUUID := uuid.New() // 6. Создать заказ со статусом PENDING_PAYMENT
+	var shieldUUID *uuid.UUID
+	if v, ok := req.GetShieldUUID().Get(); ok {
+		shieldUUID = &v
+	}
+	var weaponUUID *uuid.UUID
+	if v, ok := req.GetShieldUUID().Get(); ok {
+		weaponUUID = &v
+	}
 	order := Order{
 		OrderUUID:       orderUUID,
 		EngineUUID:      req.GetEngineUUID(),
 		HullUUID:        req.GetHullUUID(),
-		ShieldUUID:      new(req.GetShieldUUID().Value),
-		WeaponUUID:      new(req.GetWeaponUUID().Value),
+		ShieldUUID:      shieldUUID,
+		WeaponUUID:      weaponUUID,
 		TotalPrice:      totalPrice,
 		TransactionUUID: nil,
 		PaymentMethod:   nil,
@@ -276,9 +284,11 @@ func (h *OrderHandler) PayOrder(ctx context.Context, req *orderv1.PayOrderReques
 		}, nil
 	}
 	orderStatus := string(orderv1.OrderStatusPAID)
+	pm := string(req.PaymentMethod)
+
 	order.Status = orderStatus
 	order.TransactionUUID = &transactionUUID
-	order.PaymentMethod = new(string(req.PaymentMethod))
+	order.PaymentMethod = &pm
 
 	h.store.mu.Lock()
 	h.store.orders[order.OrderUUID] = order

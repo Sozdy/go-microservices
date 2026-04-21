@@ -76,6 +76,6 @@ func main() {
 
 	case err := <-serveErrCh:
 		slog.Error("🛑 gRPC сервер завершился с ошибкой", "error", err)
-		panic("gRPC сервер завершился с ошибкой: " + err.Error())
+		return
 	}
 }

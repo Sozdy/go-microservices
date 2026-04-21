@@ -133,8 +133,17 @@ func (s *InventoryServer) ListParts(
 	req *inventoryv1.ListPartsRequest,
 ) (*inventoryv1.ListPartsResponse, error) {
 	reqUUIDs := req.GetUuids()
+	partType := req.GetPartType()
+
+	result := make([]*inventoryv1.Part, 0)
+
 	if len(reqUUIDs) > 0 {
-		parts := make([]*inventoryv1.Part, 0, len(reqUUIDs))
+		if partType != inventoryv1.PartType_PART_TYPE_UNSPECIFIED {
+			return nil, status.Error(
+				codes.InvalidArgument,
+				"part_type не должен передаваться вместе с uuids",
+			)
+		}
 
 		for _, partUUID := range reqUUIDs {
 			parsedUUID, err := uuid.Parse(partUUID)
@@ -147,31 +156,21 @@ func (s *InventoryServer) ListParts(
 				return nil, status.Errorf(codes.NotFound, "деталь не найдена: %s", partUUID)
 			}
 
-			parts = append(parts, toProtoPart(part))
+			result = append(result, toProtoPart(part))
+		}
+	} else {
+		for _, part := range s.parts {
+			if partType != inventoryv1.PartType_PART_TYPE_UNSPECIFIED &&
+				part.PartType != partType {
+				continue
+			}
+
+			result = append(result, toProtoPart(part))
 		}
 
-		return &inventoryv1.ListPartsResponse{
-			Parts: parts,
-		}, nil
-	}
-
-	parts := make([]Part, 0, len(s.parts))
-	for _, part := range s.parts {
-		if req.GetPartType() != inventoryv1.PartType_PART_TYPE_UNSPECIFIED &&
-			part.PartType != req.GetPartType() {
-			continue
-		}
-
-		parts = append(parts, part)
-	}
-
-	sort.Slice(parts, func(i, j int) bool {
-		return parts[i].Name < parts[j].Name
-	})
-
-	result := make([]*inventoryv1.Part, 0, len(parts))
-	for _, part := range parts {
-		result = append(result, toProtoPart(part))
+		sort.Slice(result, func(i, j int) bool {
+			return result[i].Name < result[j].Name
+		})
 	}
 
 	return &inventoryv1.ListPartsResponse{
