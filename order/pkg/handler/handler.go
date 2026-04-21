@@ -187,7 +187,7 @@ func (h *OrderHandler) CreateOrder(ctx context.Context, req *orderv1.CreateOrder
 		shieldUUID = &v
 	}
 	var weaponUUID *uuid.UUID
-	if v, ok := req.GetShieldUUID().Get(); ok {
+	if v, ok := req.GetWeaponUUID().Get(); ok {
 		weaponUUID = &v
 	}
 	order := Order{

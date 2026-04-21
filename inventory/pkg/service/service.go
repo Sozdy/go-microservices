@@ -138,13 +138,6 @@ func (s *InventoryServer) ListParts(
 	result := make([]*inventoryv1.Part, 0)
 
 	if len(reqUUIDs) > 0 {
-		if partType != inventoryv1.PartType_PART_TYPE_UNSPECIFIED {
-			return nil, status.Error(
-				codes.InvalidArgument,
-				"part_type не должен передаваться вместе с uuids",
-			)
-		}
-
 		for _, partUUID := range reqUUIDs {
 			parsedUUID, err := uuid.Parse(partUUID)
 			if err != nil {
