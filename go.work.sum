@@ -6,6 +6,7 @@ github.com/GoogleCloudPlatform/opentelemetry-operations-go/detectors/gcp v1.31.0
 github.com/GoogleCloudPlatform/opentelemetry-operations-go/detectors/gcp v1.31.0/go.mod h1:P4WPRUkOhJC13W//jWpyfJNDAIpvRbAUIYLX/4jtlE0=
 github.com/Sozdy/go-microservices/inventory v0.0.0-20260417094255-3fdbe5fad17a/go.mod h1:y8ZeZ7Sf4uf/oIQaemRqgtYW/l5s9U2m8rJ6D2zBaTo=
 github.com/Sozdy/go-microservices/payment v0.0.0-20260417094255-3fdbe5fad17a/go.mod h1:fnhelP8xg0eu92RJT5yNFBFO2ZvzUO1aJzXvgZUiO84=
+github.com/Sozdy/go-microservices/shared v0.0.0-20260417094255-3fdbe5fad17a/go.mod h1:Ieq1+1hgjxjrXZ9uKR4e8PseYSywMV2BpfmBdO4e2iM=
 github.com/andybalholm/brotli v1.2.0 h1:ukwgCxwYrmACq68yiUqwIWnGY0cTPox/M94sVwToPjQ=
 github.com/andybalholm/brotli v1.2.0/go.mod h1:rzTDkvFWvIrjDXZHkuS16NPggd91W3kUSvPlQ1pLaKY=
 github.com/cncf/xds/go v0.0.0-20251210132809-ee656c7534f5 h1:6xNmx7iTtyBRev0+D/Tv1FZd4SCg8axKApyNyRsAt/w=

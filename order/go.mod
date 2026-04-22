@@ -5,7 +5,7 @@ go 1.26.0
 require (
 	github.com/Sozdy/go-microservices/inventory v0.0.0-20260417094255-3fdbe5fad17a
 	github.com/Sozdy/go-microservices/payment v0.0.0-20260417094255-3fdbe5fad17a
-	github.com/Sozdy/go-microservices/shared v0.0.0-20260417094255-3fdbe5fad17a
+	github.com/Sozdy/go-microservices/shared v0.0.0-20260420174801-48c2ac78121b
 	github.com/google/uuid v1.6.0
 	github.com/stretchr/testify v1.11.1
 	google.golang.org/grpc v1.80.0
@@ -44,9 +44,3 @@ require (
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
-
-replace github.com/Sozdy/go-microservices/shared => ./../shared
-
-replace github.com/Sozdy/go-microservices/inventory => ./../inventory
-
-replace github.com/Sozdy/go-microservices/payment => ./../payment
