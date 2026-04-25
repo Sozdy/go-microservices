@@ -1,0 +1,2 @@
+// Code generated for Sozdy go-microservices
+// © Student 2026.
