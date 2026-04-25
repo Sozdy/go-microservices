@@ -9,5 +9,4 @@ func Interceptors() []grpc.ServerOption {
 }
 
 func RegisterServices(server *grpc.Server) {
-
 }
