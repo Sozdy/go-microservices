@@ -23,3 +23,10 @@ properties:
     type: string
     description: Человекочитаемое описание ошибки
     example: "Invalid request parameters"
+  details:
+    type: array
+    description: |
+      Список конкретных нарушений по полям. Используется для validation-ошибок (HTTP 400).                                                                                                                                                                                                                       
+      Для остальных ошибок может отсутствовать.
+    items:
+      $ref: "./error_detail.yaml"

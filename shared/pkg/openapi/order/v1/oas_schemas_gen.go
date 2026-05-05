@@ -136,6 +136,10 @@ type Error struct {
 	Code int `json:"code"`
 	// Человекочитаемое описание ошибки.
 	Message string `json:"message"`
+	// Список конкретных нарушений по полям. Используется
+	// для validation-ошибок (HTTP 400).
+	// Для остальных ошибок может отсутствовать.
+	Details []ErrorDetail `json:"details"`
 }
 
 // GetCode returns the value of Code.
@@ -148,6 +152,11 @@ func (s *Error) GetMessage() string {
 	return s.Message
 }
 
+// GetDetails returns the value of Details.
+func (s *Error) GetDetails() []ErrorDetail {
+	return s.Details
+}
+
 // SetCode sets the value of Code.
 func (s *Error) SetCode(val int) {
 	s.Code = val
@@ -156,6 +165,40 @@ func (s *Error) SetCode(val int) {
 // SetMessage sets the value of Message.
 func (s *Error) SetMessage(val string) {
 	s.Message = val
+}
+
+// SetDetails sets the value of Details.
+func (s *Error) SetDetails(val []ErrorDetail) {
+	s.Details = val
+}
+
+// Ref: #
+type ErrorDetail struct {
+	// Человекочитаемое описание ошибки.
+	Message string `json:"message"`
+	// Имя поля или JSON-path, в котором произошла ошибка.
+	// Для вложенных полей: "address.city".
+	Field string `json:"field"`
+}
+
+// GetMessage returns the value of Message.
+func (s *ErrorDetail) GetMessage() string {
+	return s.Message
+}
+
+// GetField returns the value of Field.
+func (s *ErrorDetail) GetField() string {
+	return s.Field
+}
+
+// SetMessage sets the value of Message.
+func (s *ErrorDetail) SetMessage(val string) {
+	s.Message = val
+}
+
+// SetField sets the value of Field.
+func (s *ErrorDetail) SetField(val string) {
+	s.Field = val
 }
 
 type GetOrderBadRequest Error
