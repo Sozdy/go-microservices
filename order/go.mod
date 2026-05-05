@@ -3,10 +3,11 @@ module github.com/Sozdy/go-microservices/order
 go 1.26.0
 
 require (
-	github.com/Sozdy/go-microservices/inventory v0.0.0-20260417094255-3fdbe5fad17a
-	github.com/Sozdy/go-microservices/payment v0.0.0-20260417094255-3fdbe5fad17a
+	github.com/Sozdy/go-microservices/inventory v0.0.0-20260425140203-b8e53112b715
+	github.com/Sozdy/go-microservices/payment v0.0.0-20260425140203-b8e53112b715
 	github.com/Sozdy/go-microservices/shared v0.0.0-20260420174801-48c2ac78121b
 	github.com/google/uuid v1.6.0
+	github.com/ogen-go/ogen v1.20.3
 	github.com/stretchr/testify v1.11.1
 	google.golang.org/grpc v1.80.0
 )
@@ -24,7 +25,6 @@ require (
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/mattn/go-colorable v0.1.14 // indirect
 	github.com/mattn/go-isatty v0.0.21 // indirect
-	github.com/ogen-go/ogen v1.20.3 // indirect
 	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
 	github.com/segmentio/asm v1.2.1 // indirect
 	github.com/shopspring/decimal v1.4.0 // indirect

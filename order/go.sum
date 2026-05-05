@@ -1,7 +1,7 @@
-github.com/Sozdy/go-microservices/inventory v0.0.0-20260417094255-3fdbe5fad17a h1:l+govkAYfB6XcA7N9lAxgReQyE/Jveb5dVsg0eNr9nI=
-github.com/Sozdy/go-microservices/inventory v0.0.0-20260417094255-3fdbe5fad17a/go.mod h1:y8ZeZ7Sf4uf/oIQaemRqgtYW/l5s9U2m8rJ6D2zBaTo=
-github.com/Sozdy/go-microservices/payment v0.0.0-20260417094255-3fdbe5fad17a h1:dqIJJT6FE1ygFuDxtn9EzQ5JCPP9XGclWIECBFYSEYI=
-github.com/Sozdy/go-microservices/payment v0.0.0-20260417094255-3fdbe5fad17a/go.mod h1:fnhelP8xg0eu92RJT5yNFBFO2ZvzUO1aJzXvgZUiO84=
+github.com/Sozdy/go-microservices/inventory v0.0.0-20260425140203-b8e53112b715 h1:cI7fGF+K8R1P2gPqu5V0U7Ry09sGWyiaRrQcm9LItlQ=
+github.com/Sozdy/go-microservices/inventory v0.0.0-20260425140203-b8e53112b715/go.mod h1:VGbggxAcwFiWcOjdh4+CQuGrH4TKpSZybpFe6rrHMzs=
+github.com/Sozdy/go-microservices/payment v0.0.0-20260425140203-b8e53112b715 h1:bOxN/gM2+M2ESOJTcWw9hPLZDURTR5dwbNHwO2T6JEM=
+github.com/Sozdy/go-microservices/payment v0.0.0-20260425140203-b8e53112b715/go.mod h1:41wuj5abvBTg72EQtxkrR90f8I4c3z0txmsbTwYA4l4=
 github.com/Sozdy/go-microservices/shared v0.0.0-20260420174801-48c2ac78121b h1:SDbaMxYpVTW6wgYLYSC6ZG7ZMpDh8A5/um7m+ZLNUc4=
 github.com/Sozdy/go-microservices/shared v0.0.0-20260420174801-48c2ac78121b/go.mod h1:Hv8JGcdeHMEcGb2izG9R3qok5mdR82gixdhaqSax0Q4=
 github.com/cespare/xxhash/v2 v2.3.0 h1:UL815xU9SqsFlibzuggzjXhog7bL6oX9BbNZnL2UFvs=
