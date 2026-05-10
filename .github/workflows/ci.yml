@@ -2,7 +2,7 @@ name: ci
 
 on:
   push:
-    branches: [main]
+    branches: [main, home-works/week-2]
   pull_request:
 
 jobs:
@@ -44,7 +44,8 @@ jobs:
           echo "value=$value" >> "$GITHUB_OUTPUT"
 
       - name: Update Gist badge
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        # TODO: вернуть условие после успешной проверки
+        # if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: schneegans/dynamic-badges-action@v1.7.0
         with:
           auth: ${{ secrets.GIST_SECRET }}
