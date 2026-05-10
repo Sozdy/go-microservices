@@ -1,5 +1,5 @@
 # microservices
-![Coverage](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/YOUR_USERNAME/YOUR_GIST_ID/raw/coverage.json)
+![Coverage](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/Sozdy/d00f582c6b62437ef4e5002ef99e5982/raw/coverage.json)
 
 Учебный проект по микросервисам на Go. Содержит три сервиса — `order`, `inventory`, `payment` — и общий модуль `shared` с proto-контрактами и OpenAPI-спецификациями.
 
