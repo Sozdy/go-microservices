@@ -48,7 +48,7 @@ func (s *orderService) CreateOrder(ctx context.Context, in *CreateOrderIn) (*Cre
 		Uuids:    partUUIDs,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("получить детали из inventory: %w", err)
+		return nil, fmt.Errorf("получить детали из part: %w", err)
 	}
 
 	totalPrice, err := calculateTotalPrice(listPartsRes.Parts)

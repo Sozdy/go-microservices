@@ -7,7 +7,7 @@ import (
 
 	"github.com/google/uuid"
 
-	apierr "github.com/Sozdy/go-microservices/order/internal/api"
+	apierr "github.com/Sozdy/go-microservices/order/internal/api/order/v1/errs"
 	orderv1 "github.com/Sozdy/go-microservices/shared/pkg/openapi/order/v1"
 )
 

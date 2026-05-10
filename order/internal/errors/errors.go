@@ -5,7 +5,7 @@ import "errors"
 var (
 	ErrPartNotFound         = errors.New("деталь не найдена")
 	ErrInvalidPartFilter    = errors.New("неверный фильтр поиска деталей")
-	ErrInventoryUnavailable = errors.New("сервис inventory недоступен")
+	ErrInventoryUnavailable = errors.New("сервис part недоступен")
 
 	ErrPayOrderNotFound   = errors.New("метод для оплаты не найден")
 	ErrInvalidPayOrder    = errors.New("неверные данные для оплаты заказа")

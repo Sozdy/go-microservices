@@ -6,8 +6,8 @@ import (
 
 	"google.golang.org/grpc/status"
 
-	"github.com/Sozdy/go-microservices/payment/internal/api/payment"
 	"github.com/Sozdy/go-microservices/payment/internal/api/payment/v1/converter"
+	"github.com/Sozdy/go-microservices/payment/internal/api/payment/v1/errs"
 	paymentv1 "github.com/Sozdy/go-microservices/shared/pkg/proto/payment/v1"
 )
 
@@ -28,7 +28,7 @@ func (a *api) PayOrder(
 }
 
 func handlePayOrderError(err error) error {
-	paymentError := payment.FromError(err)
+	paymentError := errs.FromError(err)
 	if paymentError.Log {
 		slog.Error(paymentError.Message, "err", err)
 	}

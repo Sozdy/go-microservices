@@ -1,4 +1,4 @@
-package inventory
+package part
 
 type partService struct {
 	partRepository PartRepository

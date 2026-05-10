@@ -26,7 +26,7 @@ import (
 	paymentv1 "github.com/Sozdy/go-microservices/shared/pkg/proto/payment/v1"
 )
 
-// Предзагруженные UUID и цены деталей (из inventory/cmd/main.go).
+// Предзагруженные UUID и цены деталей (из part/cmd/main.go).
 const (
 	HullAluminumUUID   = "550e8400-e29b-41d4-a716-446655440001" // 500000 kopecks (5000 RUB)
 	HullTitaniumUUID   = "550e8400-e29b-41d4-a716-446655440002" // 1500000 kopecks (15000 RUB)
@@ -1397,7 +1397,7 @@ func TestOrder_Create_DuplicateUUID_HullAndEngine(t *testing.T) {
 		"цена удваивается, так как один и тот же UUID передан дважды")
 }
 
-// Тест inventory: деталь с нулевым остатком.
+// Тест part: деталь с нулевым остатком.
 
 func TestInventory_GetPart_OutOfStock(t *testing.T) {
 	resp, err := inventoryClient.GetPart(context.Background(), &inventoryv1.GetPartRequest{

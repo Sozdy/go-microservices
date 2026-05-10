@@ -26,9 +26,10 @@ func (s *paymentService) PayOrder(ctx context.Context, orderUUID string, method 
 
 	transactionUUID := uuid.New()
 
-	slog.Info("оплата прошла успешно",
+	slog.Info("оплата выполнена",
 		"order_uuid", orderUUID,
 		"transaction_uuid", transactionUUID,
+		"payment_method", method,
 	)
 
 	return &model.Transaction{

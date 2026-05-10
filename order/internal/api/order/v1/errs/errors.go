@@ -1,4 +1,4 @@
-package api
+package errs
 
 import (
 	"errors"
@@ -71,7 +71,7 @@ func FromError(err error) Error {
 	case errors.Is(err, errs.ErrInventoryUnavailable):
 		return Error{
 			Status:  http.StatusServiceUnavailable,
-			Message: "сервис inventory временно недоступен",
+			Message: "сервис part временно недоступен",
 			Log:     true,
 		}
 	case errors.Is(err, errs.ErrPaymentUnavailable):

@@ -8,8 +8,8 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/Sozdy/go-microservices/inventory/internal/api/inventory"
 	"github.com/Sozdy/go-microservices/inventory/internal/api/inventory/v1/converter"
+	"github.com/Sozdy/go-microservices/inventory/internal/api/inventory/v1/errs"
 	inventoryv1 "github.com/Sozdy/go-microservices/shared/pkg/proto/inventory/v1"
 )
 
@@ -35,7 +35,7 @@ func (a *api) GetPart(
 }
 
 func handleGetPartError(err error) error {
-	inventoryError := inventory.FromError(err)
+	inventoryError := errs.FromError(err)
 	if inventoryError.Log {
 		slog.Error(inventoryError.Message, "err", err)
 	}

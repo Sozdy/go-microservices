@@ -29,7 +29,7 @@ func (c *client) ListParts(ctx context.Context, req *inventory.ListPartsRequest)
 				return nil, errs.ErrInventoryUnavailable
 			}
 		}
-		return nil, fmt.Errorf("сервис inventory метод ListParts: %w", err)
+		return nil, fmt.Errorf("сервис part метод ListParts: %w", err)
 	}
 
 	return converter.ListPartsResponseFromProto(resp), nil

@@ -33,7 +33,7 @@ func (c *client) GetPart(ctx context.Context, partUUID uuid.UUID) (*inventory.Pa
 				return nil, errs.ErrInventoryUnavailable
 			}
 		}
-		return nil, fmt.Errorf("сервис inventory метод GetPart: %w", err)
+		return nil, fmt.Errorf("сервис part метод GetPart: %w", err)
 	}
 
 	return converter.PartFromProto(resp.Part), nil

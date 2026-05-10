@@ -8,7 +8,7 @@ import (
 
 	v1 "github.com/Sozdy/go-microservices/inventory/internal/api/inventory/v1"
 	"github.com/Sozdy/go-microservices/inventory/internal/repository/part"
-	"github.com/Sozdy/go-microservices/inventory/internal/service/inventory"
+	partService "github.com/Sozdy/go-microservices/inventory/internal/service/part"
 	inventoryv1 "github.com/Sozdy/go-microservices/shared/pkg/proto/inventory/v1"
 )
 
@@ -41,7 +41,7 @@ func RegisterServices(server *grpc.Server) {
 	inventoryv1.RegisterInventoryServiceServer(
 		server,
 		v1.NewApi(
-			inventory.NewPartService(
+			partService.NewPartService(
 				part.NewRepository(),
 			),
 		),
