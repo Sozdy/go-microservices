@@ -8,7 +8,7 @@ import (
 	"github.com/brianvoe/gofakeit/v7"
 	"github.com/stretchr/testify/assert"
 
-	errs "github.com/Sozdy/go-microservices/payment/internal/errors"
+	"github.com/Sozdy/go-microservices/payment/internal/errs"
 	"github.com/Sozdy/go-microservices/payment/internal/model"
 )
 

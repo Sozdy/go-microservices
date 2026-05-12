@@ -6,6 +6,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/keepalive"
 
+	"github.com/Sozdy/go-microservices/payment/internal/api/interceptor"
 	v1 "github.com/Sozdy/go-microservices/payment/internal/api/payment/v1"
 	"github.com/Sozdy/go-microservices/payment/internal/service/payment"
 	paymentv1 "github.com/Sozdy/go-microservices/shared/pkg/proto/payment/v1"
@@ -22,6 +23,9 @@ const (
 
 func Interceptors() []grpc.ServerOption {
 	return []grpc.ServerOption{
+		grpc.ChainUnaryInterceptor(
+			interceptor.UnaryErrorInterceptor(),
+		),
 		grpc.KeepaliveParams(keepalive.ServerParameters{
 			MaxConnectionIdle:     grpcMaxConnectionIdle,
 			MaxConnectionAge:      grpcMaxConnectionAge,

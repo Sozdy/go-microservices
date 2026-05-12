@@ -1,7 +1,6 @@
 package app
 
 import (
-	"log/slog"
 	"time"
 
 	"google.golang.org/grpc"
@@ -26,7 +25,7 @@ const (
 func Interceptors() []grpc.ServerOption {
 	return []grpc.ServerOption{
 		grpc.ChainUnaryInterceptor(
-			interceptor.UnaryErrorInterceptor(slog.Default()),
+			interceptor.UnaryErrorInterceptor(),
 		),
 		grpc.KeepaliveParams(keepalive.ServerParameters{
 			MaxConnectionIdle:     grpcMaxConnectionIdle,

@@ -8,7 +8,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/Sozdy/go-microservices/inventory/internal/errs"
+	"github.com/Sozdy/go-microservices/payment/internal/errs"
 )
 
 func codeToGRPC(c errs.Code) codes.Code {

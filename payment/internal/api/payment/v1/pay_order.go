@@ -2,12 +2,8 @@ package v1
 
 import (
 	"context"
-	"log/slog"
-
-	"google.golang.org/grpc/status"
 
 	"github.com/Sozdy/go-microservices/payment/internal/api/payment/v1/converter"
-	"github.com/Sozdy/go-microservices/payment/internal/api/payment/v1/errs"
 	paymentv1 "github.com/Sozdy/go-microservices/shared/pkg/proto/payment/v1"
 )
 
@@ -21,17 +17,8 @@ func (a *api) PayOrder(
 		converter.PaymentMethodToModel(req.GetPaymentMethod()),
 	)
 	if err != nil {
-		return nil, handlePayOrderError(err)
+		return nil, err
 	}
 
 	return converter.TransactionToProto(transaction), nil
-}
-
-func handlePayOrderError(err error) error {
-	paymentError := errs.FromError(err)
-	if paymentError.Log {
-		slog.Error(paymentError.Message, "err", err)
-	}
-
-	return status.Errorf(paymentError.Code, "%s", paymentError.Message)
 }

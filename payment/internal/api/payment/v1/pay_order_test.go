@@ -6,10 +6,8 @@ import (
 
 	"github.com/brianvoe/gofakeit/v7"
 	"github.com/stretchr/testify/require"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 
-	paymentErrs "github.com/Sozdy/go-microservices/payment/internal/errors"
+	"github.com/Sozdy/go-microservices/payment/internal/errs"
 	"github.com/Sozdy/go-microservices/payment/internal/model"
 	paymentv1 "github.com/Sozdy/go-microservices/shared/pkg/proto/payment/v1"
 )
@@ -89,7 +87,7 @@ func TestPayOrder_ServiceError(t *testing.T) {
 		request         *paymentv1.PayOrderRequest
 		wantModelMethod model.PaymentMethod
 		serviceErr      error
-		wantCode        codes.Code
+		wantCode        errs.Code
 	}{
 		{
 			name: "пустой order_uuid",
@@ -98,8 +96,8 @@ func TestPayOrder_ServiceError(t *testing.T) {
 				PaymentMethod: paymentv1.PaymentMethod_PAYMENT_METHOD_CARD,
 			},
 			wantModelMethod: model.PaymentMethodCard,
-			serviceErr:      paymentErrs.ErrOrderUUIDEmpty,
-			wantCode:        codes.InvalidArgument,
+			serviceErr:      errs.ErrOrderUUIDEmpty,
+			wantCode:        errs.CodeInvalidArgument,
 		},
 		{
 			name: "невалидный order_uuid",
@@ -108,8 +106,8 @@ func TestPayOrder_ServiceError(t *testing.T) {
 				PaymentMethod: paymentv1.PaymentMethod_PAYMENT_METHOD_CARD,
 			},
 			wantModelMethod: model.PaymentMethodCard,
-			serviceErr:      paymentErrs.ErrInvalidOrderUUID,
-			wantCode:        codes.InvalidArgument,
+			serviceErr:      errs.ErrInvalidOrderUUID,
+			wantCode:        errs.CodeInvalidArgument,
 		},
 		{
 			name: "UNSPECIFIED метод оплаты",
@@ -118,8 +116,8 @@ func TestPayOrder_ServiceError(t *testing.T) {
 				PaymentMethod: paymentv1.PaymentMethod_PAYMENT_METHOD_UNSPECIFIED,
 			},
 			wantModelMethod: model.PaymentMethodUnspecified,
-			serviceErr:      paymentErrs.ErrPaymentMethodUnspecified,
-			wantCode:        codes.InvalidArgument,
+			serviceErr:      errs.ErrPaymentMethodUnspecified,
+			wantCode:        errs.CodeInvalidArgument,
 		},
 		{
 			name: "внутренняя ошибка сервиса",
@@ -129,7 +127,7 @@ func TestPayOrder_ServiceError(t *testing.T) {
 			},
 			wantModelMethod: model.PaymentMethodCard,
 			serviceErr:      errors.New("что-то пошло не так в БД"),
-			wantCode:        codes.Internal,
+			wantCode:        errs.CodeInternal,
 		},
 	}
 
@@ -152,10 +150,7 @@ func TestPayOrder_ServiceError(t *testing.T) {
 			// === Assert ===
 			require.Error(t, err)
 			require.Nil(t, response)
-
-			grpcStatus, isGRPCStatus := status.FromError(err)
-			require.True(t, isGRPCStatus, "api должен возвращать grpc status error")
-			require.Equal(t, testCase.wantCode, grpcStatus.Code())
+			require.Equal(t, testCase.wantCode, errs.CodeOf(err))
 		})
 	}
 }
