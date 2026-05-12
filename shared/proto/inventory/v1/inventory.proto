@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package inventory.v1;
 
-option go_package = "github.com/Sozdy/go-microservices/shared/pkg/proto/inventory/v1;inventoryv1";
+option go_package = "github.com/Sozdy/go-microservices/shared/pkg/proto/part/v1;inventoryv1";
 
 import "google/protobuf/timestamp.proto";
 

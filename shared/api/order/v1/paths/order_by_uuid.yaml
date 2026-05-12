@@ -13,7 +13,7 @@ get:
       content:
         application/json:
           schema:
-            $ref: ../components/order_dto.yaml
+            $ref: ../components/get_order_response.yaml
     '400':
       description: Невалидный формат UUID
       content:

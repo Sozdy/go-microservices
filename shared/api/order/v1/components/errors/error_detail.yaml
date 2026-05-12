@@ -1,0 +1,17 @@
+# Единая схема для описания деталей ошибок в API заказов.
+# Используется для предоставления клиенту информации о том, что именно пошло не так при обработке запроса.
+name: ErrorDetail
+type: object
+required:
+  - message
+  - field
+properties:
+  message:
+    type: string
+    description: Человекочитаемое описание ошибки
+    example: "должен быть валидным UUID v4"
+  field:
+    type: string
+    description: |
+      Имя поля или JSON-path, в котором произошла ошибка.
+      Для вложенных полей: "address.city".

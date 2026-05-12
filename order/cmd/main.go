@@ -14,15 +14,12 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/keepalive"
 
-	orderHandler "github.com/Sozdy/go-microservices/order/pkg/handler"
+	"github.com/Sozdy/go-microservices/order/pkg/app"
 	inventoryv1 "github.com/Sozdy/go-microservices/shared/pkg/proto/inventory/v1"
 	paymentv1 "github.com/Sozdy/go-microservices/shared/pkg/proto/payment/v1"
 )
 
 const (
-	inventoryServiceAddress = "localhost:50051"
-	paymentServiceAddress   = "localhost:50052"
-
 	httpAddress = "127.0.0.1:8080"
 
 	// Таймауты для HTTP-сервера.
@@ -31,29 +28,15 @@ const (
 	writeTimeout      = 15 * time.Second
 	idleTimeout       = 60 * time.Second
 
-	// Таймауты inventory и payment gRPC клиентов.
-	keepaliveTime    = 10 * time.Second
-	keepaliveTimeout = 3 * time.Second
-
 	shutdownTimeout = 10 * time.Second
+
+	inventoryServiceAddress = "localhost:50051"
+	paymentServiceAddress   = "localhost:50052"
+	keepaliveTime           = 10 * time.Second
+	keepaliveTimeout        = 3 * time.Second
 )
 
 func main() {
-	inventoryConn, err := grpc.NewClient(
-		inventoryServiceAddress,
-		grpc.WithTransportCredentials(insecure.NewCredentials()),
-		grpc.WithKeepaliveParams(keepalive.ClientParameters{
-			Time:                keepaliveTime,
-			Timeout:             keepaliveTimeout,
-			PermitWithoutStream: true,
-		}),
-	)
-	if err != nil {
-		slog.Error("не удалось подключиться к InventoryService", "error", err)
-		panic(err)
-	}
-	defer inventoryConn.Close()
-
 	paymentConn, err := grpc.NewClient(
 		paymentServiceAddress,
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
@@ -65,41 +48,47 @@ func main() {
 	)
 	if err != nil {
 		slog.Error("не удалось подключиться к PaymentService", "error", err)
-		panic(err)
 	}
 	defer paymentConn.Close()
 
-	// Создаём хранилище и обработчик
-	store := orderHandler.NewOrderStore()
-	handler := orderHandler.NewOrderHandler(
-		inventoryv1.NewInventoryServiceClient(inventoryConn),
-		paymentv1.NewPaymentServiceClient(paymentConn),
-		store,
-	)
+	paymentClient := paymentv1.NewPaymentServiceClient(paymentConn)
 
-	// Создать OpenAPI сервер
-	orderServer, err := orderHandler.SetupServer(handler)
+	inventoryConn, err := grpc.NewClient(
+		inventoryServiceAddress,
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+		grpc.WithKeepaliveParams(keepalive.ClientParameters{
+			Time:                keepaliveTime,
+			Timeout:             keepaliveTimeout,
+			PermitWithoutStream: true,
+		}),
+	)
 	if err != nil {
-		slog.Error("ошибка создания сервера OpenAPI", "error", err)
+		slog.Error("не удалось подключиться к InventoryService", "error", err)
+	}
+	defer inventoryConn.Close()
+
+	inventoryClient := inventoryv1.NewInventoryServiceClient(inventoryConn)
+
+	handler, err := app.NewHTTPHandler(inventoryClient, paymentClient)
+	if err != nil {
 		panic(err)
+	}
+
+	server := &http.Server{
+		Addr:              httpAddress,
+		Handler:           handler,
+		ReadHeaderTimeout: readHeaderTimeout, // Защита от Slowloris атаки
+		ReadTimeout:       readTimeout,       // Лимит на чтение всего запроса
+		WriteTimeout:      writeTimeout,      // Лимит на запись ответа
+		IdleTimeout:       idleTimeout,       // Таймаут keep-alive соединений
 	}
 
 	var lc net.ListenConfig
 	listener, err := lc.Listen(context.Background(), "tcp", httpAddress)
 	if err != nil {
 		slog.Error("не удалось создать listener", "error", err)
-		panic(err)
 	}
 	defer listener.Close()
-
-	server := &http.Server{
-		Addr:              httpAddress,
-		Handler:           orderServer,
-		ReadHeaderTimeout: readHeaderTimeout, // Защита от Slowloris атаки
-		ReadTimeout:       readTimeout,       // Лимит на чтение всего запроса
-		WriteTimeout:      writeTimeout,      // Лимит на запись ответа
-		IdleTimeout:       idleTimeout,       // Таймаут keep-alive соединений
-	}
 
 	slog.Info("запуск OrderService", "адрес", httpAddress)
 

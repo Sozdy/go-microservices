@@ -6,7 +6,7 @@ on:
   pull_request:
 
 jobs:
-  test:
+  api-test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -25,3 +25,34 @@ jobs:
           go-version: '1.26'
       - run: go install github.com/go-task/task/v3/cmd/task@v3.40.1
       - run: task lint
+
+  unit-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.26'
+      - run: go install github.com/go-task/task/v3/cmd/task@v3.40.1
+
+      - run: task test:coverage
+
+      - name: Extract total coverage
+        id: cov
+        run: |
+          value=$(go tool cover -func=coverage/coverage.out | grep '^total:' | awk '{print $3}' | tr -d '%')
+          echo "value=$value" >> "$GITHUB_OUTPUT"
+
+      - name: Update Gist badge
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: schneegans/dynamic-badges-action@v1.7.0
+        with:
+          auth: ${{ secrets.GIST_SECRET }}
+          gistID: d00f582c6b62437ef4e5002ef99e5982
+          filename: coverage.json
+
+          label: coverage
+          message: ${{ steps.cov.outputs.value }}%
+          valColorRange: ${{ steps.cov.outputs.value }}
+          maxColorRange: 90
+          minColorRange: 40
