@@ -10,7 +10,7 @@ import (
 	"google.golang.org/grpc/status"
 
 	"github.com/Sozdy/go-microservices/order/internal/client/grpc/inventory/v1/converter"
-	errs "github.com/Sozdy/go-microservices/order/internal/errors"
+	"github.com/Sozdy/go-microservices/order/internal/errs"
 	"github.com/Sozdy/go-microservices/order/internal/model/ports/inventory"
 	inventoryv1 "github.com/Sozdy/go-microservices/shared/pkg/proto/inventory/v1"
 )

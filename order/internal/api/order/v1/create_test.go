@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 
-	orderErrs "github.com/Sozdy/go-microservices/order/internal/errors"
+	"github.com/Sozdy/go-microservices/order/internal/errs"
 	"github.com/Sozdy/go-microservices/order/internal/service/order"
 	orderv1 "github.com/Sozdy/go-microservices/shared/pkg/openapi/order/v1"
 )
@@ -76,17 +76,17 @@ func TestCreateOrder_ServiceError(t *testing.T) {
 	}{
 		{
 			name:       "деталь не найдена",
-			serviceErr: orderErrs.ErrPartNotFound,
+			serviceErr: errs.ErrPartNotFound,
 			wantType:   &orderv1.CreateOrderNotFound{},
 		},
 		{
 			name:       "деталь недоступна на складе",
-			serviceErr: orderErrs.ErrPartUnavailable,
+			serviceErr: errs.ErrPartUnavailable,
 			wantType:   &orderv1.CreateOrderConflict{},
 		},
 		{
 			name:       "inventory недоступен",
-			serviceErr: orderErrs.ErrInventoryUnavailable,
+			serviceErr: errs.ErrInventoryUnavailable,
 			wantType:   &orderv1.CreateOrderInternalServerError{},
 		},
 		{

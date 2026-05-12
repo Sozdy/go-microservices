@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 
-	orderErrs "github.com/Sozdy/go-microservices/order/internal/errors"
+	"github.com/Sozdy/go-microservices/order/internal/errs"
 	"github.com/Sozdy/go-microservices/order/internal/model"
 )
 
@@ -69,7 +69,7 @@ func TestCancelOrder_StatusConflict(t *testing.T) {
 	// === Assert ===
 	require.Error(t, err)
 	require.Nil(t, out)
-	require.ErrorIs(t, err, orderErrs.ErrCancelOrderStatusConflict)
+	require.ErrorIs(t, err, errs.ErrCancelOrderStatusConflict)
 }
 
 func TestCancelOrder_UpdateError(t *testing.T) {

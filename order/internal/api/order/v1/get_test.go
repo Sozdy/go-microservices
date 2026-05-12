@@ -8,7 +8,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/require"
 
-	orderErrs "github.com/Sozdy/go-microservices/order/internal/errors"
+	"github.com/Sozdy/go-microservices/order/internal/errs"
 	"github.com/Sozdy/go-microservices/order/internal/model"
 	orderv1 "github.com/Sozdy/go-microservices/shared/pkg/openapi/order/v1"
 )
@@ -76,7 +76,7 @@ func TestGetOrder_ServiceError(t *testing.T) {
 	}{
 		{
 			name:       "заказ не найден",
-			serviceErr: orderErrs.ErrOrderNotFound,
+			serviceErr: errs.ErrOrderNotFound,
 			wantType:   &orderv1.GetOrderNotFound{},
 		},
 		{

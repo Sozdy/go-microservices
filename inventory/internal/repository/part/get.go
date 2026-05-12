@@ -10,7 +10,7 @@ import (
 
 func (r *repo) GetPart(ctx context.Context, uuid string) (*model.Part, error) {
 	r.mu.RLock()
-	defer r.mu.Unlock()
+	defer r.mu.RUnlock()
 
 	part, ok := r.parts[uuid]
 	if !ok {

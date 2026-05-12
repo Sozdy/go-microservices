@@ -7,7 +7,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/require"
 
-	orderErrs "github.com/Sozdy/go-microservices/order/internal/errors"
+	"github.com/Sozdy/go-microservices/order/internal/errs"
 	"github.com/Sozdy/go-microservices/order/internal/service/order"
 	orderv1 "github.com/Sozdy/go-microservices/shared/pkg/openapi/order/v1"
 )
@@ -60,12 +60,12 @@ func TestCancelOrder_ServiceError(t *testing.T) {
 	}{
 		{
 			name:       "заказ не найден",
-			serviceErr: orderErrs.ErrOrderNotFound,
+			serviceErr: errs.ErrOrderNotFound,
 			wantType:   &orderv1.CancelOrderNotFound{},
 		},
 		{
 			name:       "конфликт статуса",
-			serviceErr: orderErrs.ErrCancelOrderStatusConflict,
+			serviceErr: errs.ErrCancelOrderStatusConflict,
 			wantType:   &orderv1.CancelOrderConflict{},
 		},
 		{

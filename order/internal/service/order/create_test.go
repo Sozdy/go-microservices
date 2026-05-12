@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 
-	orderErrs "github.com/Sozdy/go-microservices/order/internal/errors"
+	"github.com/Sozdy/go-microservices/order/internal/errs"
 	"github.com/Sozdy/go-microservices/order/internal/model"
 	inventoryModel "github.com/Sozdy/go-microservices/order/internal/model/ports/inventory"
 )
@@ -85,7 +85,7 @@ func TestCreateOrder_PartUnavailable(t *testing.T) {
 	// === Assert ===
 	require.Error(t, err)
 	require.Nil(t, out)
-	require.ErrorIs(t, err, orderErrs.ErrPartUnavailable)
+	require.ErrorIs(t, err, errs.ErrPartUnavailable)
 }
 
 func TestCreateOrder_InventoryClientError(t *testing.T) {

@@ -7,7 +7,7 @@ import (
 
 	"github.com/google/uuid"
 
-	errs "github.com/Sozdy/go-microservices/order/internal/errors"
+	"github.com/Sozdy/go-microservices/order/internal/errs"
 	"github.com/Sozdy/go-microservices/order/internal/model"
 	inventoryModel "github.com/Sozdy/go-microservices/order/internal/model/ports/inventory"
 )

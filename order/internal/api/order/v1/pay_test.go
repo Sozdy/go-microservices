@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 
-	orderErrs "github.com/Sozdy/go-microservices/order/internal/errors"
+	"github.com/Sozdy/go-microservices/order/internal/errs"
 	"github.com/Sozdy/go-microservices/order/internal/service/order"
 	orderv1 "github.com/Sozdy/go-microservices/shared/pkg/openapi/order/v1"
 )
@@ -68,17 +68,17 @@ func TestPayOrder_ServiceError(t *testing.T) {
 	}{
 		{
 			name:       "заказ не найден",
-			serviceErr: orderErrs.ErrOrderNotFound,
+			serviceErr: errs.ErrOrderNotFound,
 			wantType:   &orderv1.PayOrderNotFound{},
 		},
 		{
 			name:       "конфликт статуса",
-			serviceErr: orderErrs.ErrPayOrderStatusConflict,
+			serviceErr: errs.ErrPayOrderStatusConflict,
 			wantType:   &orderv1.PayOrderConflict{},
 		},
 		{
 			name:       "payment недоступен",
-			serviceErr: orderErrs.ErrPaymentUnavailable,
+			serviceErr: errs.ErrPaymentUnavailable,
 			wantType:   &orderv1.PayOrderInternalServerError{},
 		},
 		{

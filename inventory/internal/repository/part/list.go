@@ -15,7 +15,7 @@ func (r *repo) ListParts(ctx context.Context, partUUIDs []string, partType model
 	result := make([]*model.Part, 0)
 
 	r.mu.RLock()
-	defer r.mu.Unlock()
+	defer r.mu.RUnlock()
 
 	if len(partUUIDs) > 0 {
 		for _, partUUID := range partUUIDs {

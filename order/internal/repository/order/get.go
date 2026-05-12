@@ -5,14 +5,14 @@ import (
 
 	"github.com/google/uuid"
 
-	errs "github.com/Sozdy/go-microservices/order/internal/errors"
+	"github.com/Sozdy/go-microservices/order/internal/errs"
 	"github.com/Sozdy/go-microservices/order/internal/model"
 	"github.com/Sozdy/go-microservices/order/internal/repository/converter"
 )
 
 func (r *repo) Get(ctx context.Context, orderUUID uuid.UUID) (*model.Order, error) {
 	r.mu.RLock()
-	defer r.mu.Unlock()
+	defer r.mu.RUnlock()
 
 	rec, exists := r.orders[orderUUID]
 	if !exists {

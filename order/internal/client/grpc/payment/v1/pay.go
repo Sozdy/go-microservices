@@ -9,7 +9,7 @@ import (
 	"google.golang.org/grpc/status"
 
 	"github.com/Sozdy/go-microservices/order/internal/client/grpc/payment/v1/converter"
-	errs "github.com/Sozdy/go-microservices/order/internal/errors"
+	"github.com/Sozdy/go-microservices/order/internal/errs"
 	paymentModel "github.com/Sozdy/go-microservices/order/internal/model/ports/payment"
 )
 

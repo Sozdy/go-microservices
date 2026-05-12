@@ -8,7 +8,7 @@ import (
 	"github.com/google/uuid"
 
 	"github.com/Sozdy/go-microservices/order/internal/api/order/v1/converter"
-	apierr "github.com/Sozdy/go-microservices/order/internal/api/order/v1/errs"
+	"github.com/Sozdy/go-microservices/order/internal/errs"
 	orderv1 "github.com/Sozdy/go-microservices/shared/pkg/openapi/order/v1"
 )
 
@@ -50,35 +50,15 @@ func validateCreateOrderRequest(req *orderv1.CreateOrderRequest) (errDetails []o
 }
 
 func handleCreateOrderError(err error) orderv1.CreateOrderRes {
-	orderErr := apierr.FromError(err)
-	if orderErr.Log {
-		slog.Error(orderErr.Message, "err", err)
-	}
-	switch orderErr.Status {
-	case http.StatusBadRequest:
-		return &orderv1.CreateOrderBadRequest{
-			Code:    orderErr.Status,
-			Message: orderErr.Message,
-		}
-	case http.StatusNotFound:
-		return &orderv1.CreateOrderNotFound{
-			Code:    orderErr.Status,
-			Message: orderErr.Message,
-		}
-	case http.StatusConflict:
-		return &orderv1.CreateOrderConflict{
-			Code:    orderErr.Status,
-			Message: orderErr.Message,
-		}
-	case http.StatusServiceUnavailable:
-		return &orderv1.CreateOrderInternalServerError{
-			Code:    orderErr.Status,
-			Message: orderErr.Message,
-		}
+	switch errs.CodeOf(err) {
+	case errs.CodeNotFound:
+		return &orderv1.CreateOrderNotFound{Code: http.StatusNotFound, Message: errs.ClientMessage(err)}
+	case errs.CodeInvalidArgument:
+		return &orderv1.CreateOrderBadRequest{Code: http.StatusBadRequest, Message: errs.ClientMessage(err)}
+	case errs.CodeConflict, errs.CodeFailedPrecondition:
+		return &orderv1.CreateOrderConflict{Code: http.StatusConflict, Message: errs.ClientMessage(err)}
 	default:
-		return &orderv1.CreateOrderInternalServerError{
-			Code:    http.StatusInternalServerError,
-			Message: orderErr.Message,
-		}
+		slog.Error("внутренняя ошибка", "err", err)
+		return &orderv1.CreateOrderInternalServerError{Code: http.StatusInternalServerError, Message: errs.ClientMessage(err)}
 	}
 }
