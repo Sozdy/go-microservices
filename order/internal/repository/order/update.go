@@ -11,7 +11,7 @@ import (
 func (r *repo) Update(ctx context.Context, order model.Order) error {
 	rec := converter.OrderToRecord(order)
 
-	r.mu.Lock()
+	r.mu.RLock()
 	defer r.mu.Unlock()
 
 	if _, exists := r.orders[rec.OrderUUID]; !exists {

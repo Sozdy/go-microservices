@@ -7,10 +7,8 @@ import (
 	"github.com/brianvoe/gofakeit/v7"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 
-	inventoryErrs "github.com/Sozdy/go-microservices/inventory/internal/errors"
+	"github.com/Sozdy/go-microservices/inventory/internal/errs"
 	"github.com/Sozdy/go-microservices/inventory/internal/model"
 	inventoryv1 "github.com/Sozdy/go-microservices/shared/pkg/proto/inventory/v1"
 )
@@ -61,17 +59,17 @@ func TestGetPart_ValidationError(t *testing.T) {
 	testCases := []struct {
 		name     string
 		request  *inventoryv1.GetPartRequest
-		wantCode codes.Code
+		wantCode errs.Code
 	}{
 		{
-			name:     "пустой order_uuid",
+			name:     "пустой uuid",
 			request:  &inventoryv1.GetPartRequest{Uuid: ""},
-			wantCode: codes.InvalidArgument,
+			wantCode: errs.CodeInvalidArgument,
 		},
 		{
-			name:     "невалидный order_uuid",
+			name:     "невалидный uuid",
 			request:  &inventoryv1.GetPartRequest{Uuid: "not-a-uuid"},
-			wantCode: codes.InvalidArgument,
+			wantCode: errs.CodeInvalidArgument,
 		},
 	}
 
@@ -90,10 +88,7 @@ func TestGetPart_ValidationError(t *testing.T) {
 			// === Assert ===
 			require.Error(t, err)
 			require.Nil(t, response)
-
-			grpcStatus, isGRPCStatus := status.FromError(err)
-			require.True(t, isGRPCStatus, "api должен возвращать grpc status error")
-			require.Equal(t, testCase.wantCode, grpcStatus.Code())
+			require.Equal(t, testCase.wantCode, errs.CodeOf(err))
 		})
 	}
 }
@@ -105,25 +100,25 @@ func TestGetPart_ServiceError(t *testing.T) {
 		name       string
 		request    *inventoryv1.GetPartRequest
 		serviceErr error
-		wantCode   codes.Code
+		wantCode   errs.Code
 	}{
 		{
 			name:       "part не найдена",
 			request:    &inventoryv1.GetPartRequest{Uuid: gofakeit.UUID()},
-			serviceErr: inventoryErrs.ErrPartNotFound,
-			wantCode:   codes.NotFound,
+			serviceErr: errs.ErrPartNotFound,
+			wantCode:   errs.CodeNotFound,
 		},
 		{
 			name:       "невалидный uuid из сервиса",
 			request:    &inventoryv1.GetPartRequest{Uuid: gofakeit.UUID()},
-			serviceErr: inventoryErrs.ErrInvalidUUID,
-			wantCode:   codes.InvalidArgument,
+			serviceErr: errs.ErrInvalidUUID,
+			wantCode:   errs.CodeInvalidArgument,
 		},
 		{
 			name:       "внутренняя ошибка сервиса",
 			request:    &inventoryv1.GetPartRequest{Uuid: gofakeit.UUID()},
 			serviceErr: errors.New("что-то пошло не так в БД"),
-			wantCode:   codes.Internal,
+			wantCode:   errs.CodeInternal,
 		},
 	}
 
@@ -146,10 +141,7 @@ func TestGetPart_ServiceError(t *testing.T) {
 			// === Assert ===
 			require.Error(t, err)
 			require.Nil(t, response)
-
-			grpcStatus, isGRPCStatus := status.FromError(err)
-			require.True(t, isGRPCStatus, "api должен возвращать grpc status error")
-			require.Equal(t, testCase.wantCode, grpcStatus.Code())
+			require.Equal(t, testCase.wantCode, errs.CodeOf(err))
 		})
 	}
 }

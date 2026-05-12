@@ -2,12 +2,8 @@ package v1
 
 import (
 	"context"
-	"log/slog"
-
-	"google.golang.org/grpc/status"
 
 	"github.com/Sozdy/go-microservices/inventory/internal/api/inventory/v1/converter"
-	"github.com/Sozdy/go-microservices/inventory/internal/api/inventory/v1/errs"
 	inventoryv1 "github.com/Sozdy/go-microservices/shared/pkg/proto/inventory/v1"
 )
 
@@ -20,17 +16,8 @@ func (a *api) ListParts(
 		converter.PartTypeToModel(req.GetPartType()),
 	)
 	if err != nil {
-		return nil, handleListPartsError(err)
+		return nil, err
 	}
 
 	return converter.PartsToProto(parts), nil
-}
-
-func handleListPartsError(err error) error {
-	inventoryError := errs.FromError(err)
-	if inventoryError.Log {
-		slog.Error(inventoryError.Message, "err", err)
-	}
-
-	return status.Errorf(inventoryError.Code, "%s", inventoryError.Message)
 }

@@ -6,7 +6,7 @@ import (
 
 	"github.com/google/uuid"
 
-	errs "github.com/Sozdy/go-microservices/inventory/internal/errors"
+	"github.com/Sozdy/go-microservices/inventory/internal/errs"
 	"github.com/Sozdy/go-microservices/inventory/internal/model"
 	"github.com/Sozdy/go-microservices/inventory/internal/repository/converter"
 )
@@ -14,7 +14,7 @@ import (
 func (r *repo) ListParts(ctx context.Context, partUUIDs []string, partType model.PartType) ([]*model.Part, error) {
 	result := make([]*model.Part, 0)
 
-	r.mu.Lock()
+	r.mu.RLock()
 	defer r.mu.Unlock()
 
 	if len(partUUIDs) > 0 {

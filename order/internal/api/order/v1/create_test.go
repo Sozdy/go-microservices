@@ -53,7 +53,7 @@ func TestCreateOrder_ValidationError(t *testing.T) {
 	fixture := newApiFixture(t)
 
 	// === Expect ===
-	// (валидация падает на uuid.Nil — сервис не вызывается)
+	// (валидация падает на uuid.Nil - сервис не вызывается)
 
 	// === Act ===
 	response, err := fixture.api.CreateOrder(fixture.ctx, &orderv1.CreateOrderRequest{

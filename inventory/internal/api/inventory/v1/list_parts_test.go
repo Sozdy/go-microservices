@@ -6,10 +6,8 @@ import (
 
 	"github.com/brianvoe/gofakeit/v7"
 	"github.com/stretchr/testify/require"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 
-	inventoryErrs "github.com/Sozdy/go-microservices/inventory/internal/errors"
+	"github.com/Sozdy/go-microservices/inventory/internal/errs"
 	"github.com/Sozdy/go-microservices/inventory/internal/model"
 	inventoryv1 "github.com/Sozdy/go-microservices/shared/pkg/proto/inventory/v1"
 )
@@ -95,7 +93,7 @@ func TestListParts_ServiceError(t *testing.T) {
 		request           *inventoryv1.ListPartsRequest
 		wantModelPartType model.PartType
 		serviceErr        error
-		wantCode          codes.Code
+		wantCode          errs.Code
 	}{
 		{
 			name: "одна из деталей не найдена",
@@ -104,8 +102,8 @@ func TestListParts_ServiceError(t *testing.T) {
 				PartType: inventoryv1.PartType_PART_TYPE_HULL,
 			},
 			wantModelPartType: model.PartTypeHull,
-			serviceErr:        inventoryErrs.ErrPartNotFound,
-			wantCode:          codes.NotFound,
+			serviceErr:        errs.ErrPartNotFound,
+			wantCode:          errs.CodeNotFound,
 		},
 		{
 			name: "невалидный uuid из сервиса",
@@ -114,8 +112,8 @@ func TestListParts_ServiceError(t *testing.T) {
 				PartType: inventoryv1.PartType_PART_TYPE_ENGINE,
 			},
 			wantModelPartType: model.PartTypeEngine,
-			serviceErr:        inventoryErrs.ErrInvalidUUID,
-			wantCode:          codes.InvalidArgument,
+			serviceErr:        errs.ErrInvalidUUID,
+			wantCode:          errs.CodeInvalidArgument,
 		},
 		{
 			name: "внутренняя ошибка сервиса",
@@ -125,7 +123,7 @@ func TestListParts_ServiceError(t *testing.T) {
 			},
 			wantModelPartType: model.PartTypeWeapon,
 			serviceErr:        errors.New("что-то пошло не так в БД"),
-			wantCode:          codes.Internal,
+			wantCode:          errs.CodeInternal,
 		},
 	}
 
@@ -148,10 +146,7 @@ func TestListParts_ServiceError(t *testing.T) {
 			// === Assert ===
 			require.Error(t, err)
 			require.Nil(t, response)
-
-			grpcStatus, isGRPCStatus := status.FromError(err)
-			require.True(t, isGRPCStatus, "api должен возвращать grpc status error")
-			require.Equal(t, testCase.wantCode, grpcStatus.Code())
+			require.Equal(t, testCase.wantCode, errs.CodeOf(err))
 		})
 	}
 }

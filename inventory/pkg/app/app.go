@@ -1,11 +1,13 @@
 package app
 
 import (
+	"log/slog"
 	"time"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/keepalive"
 
+	"github.com/Sozdy/go-microservices/inventory/internal/api/interceptor"
 	v1 "github.com/Sozdy/go-microservices/inventory/internal/api/inventory/v1"
 	"github.com/Sozdy/go-microservices/inventory/internal/repository/part"
 	partService "github.com/Sozdy/go-microservices/inventory/internal/service/part"
@@ -23,6 +25,9 @@ const (
 
 func Interceptors() []grpc.ServerOption {
 	return []grpc.ServerOption{
+		grpc.ChainUnaryInterceptor(
+			interceptor.UnaryErrorInterceptor(slog.Default()),
+		),
 		grpc.KeepaliveParams(keepalive.ServerParameters{
 			MaxConnectionIdle:     grpcMaxConnectionIdle,
 			MaxConnectionAge:      grpcMaxConnectionAge,

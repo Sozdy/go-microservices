@@ -11,7 +11,7 @@ import (
 )
 
 func (r *repo) Get(ctx context.Context, orderUUID uuid.UUID) (*model.Order, error) {
-	r.mu.Lock()
+	r.mu.RLock()
 	defer r.mu.Unlock()
 
 	rec, exists := r.orders[orderUUID]
