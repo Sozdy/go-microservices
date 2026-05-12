@@ -4,8 +4,6 @@ import (
 	"context"
 	"sort"
 
-	"github.com/google/uuid"
-
 	"github.com/Sozdy/go-microservices/inventory/internal/errs"
 	"github.com/Sozdy/go-microservices/inventory/internal/model"
 	"github.com/Sozdy/go-microservices/inventory/internal/repository/converter"
@@ -19,10 +17,6 @@ func (r *repo) ListParts(ctx context.Context, partUUIDs []string, partType model
 
 	if len(partUUIDs) > 0 {
 		for _, partUUID := range partUUIDs {
-			if err := uuid.Validate(partUUID); err != nil {
-				return nil, errs.ErrInvalidUUID
-			}
-
 			part, ok := r.parts[partUUID]
 			if !ok {
 				return nil, errs.ErrPartNotFound

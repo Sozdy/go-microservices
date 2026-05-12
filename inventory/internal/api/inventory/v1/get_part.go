@@ -14,11 +14,8 @@ func (a *api) GetPart(
 	ctx context.Context,
 	req *inventoryv1.GetPartRequest,
 ) (*inventoryv1.GetPartResponse, error) {
-	if req.GetUuid() == "" {
-		return nil, errs.InvalidArgument("uuid не может быть пустым")
-	}
-	if _, err := uuid.Parse(req.GetUuid()); err != nil {
-		return nil, errs.InvalidArgument("uuid не является валидным")
+	if err := uuid.Validate(req.GetUuid()); err != nil {
+		return nil, errs.ErrInvalidUUID
 	}
 
 	part, err := a.InventoryService.GetPart(ctx, req.GetUuid())
