@@ -25,7 +25,9 @@ func TestCreateOrder_Success(t *testing.T) {
 
 	// === Expect ===
 	fixture.orderService.EXPECT().
-		CreateOrder(fixture.ctx, mock.Anything).
+		CreateOrder(fixture.ctx, mock.MatchedBy(func(in *order.CreateOrderIn) bool {
+			return in.HullUUID == hullUUID && in.EngineUUID == engineUUID
+		})).
 		Return(&order.CreateOrderOut{
 			OrderUUID:  createdOrderUUID,
 			TotalPrice: 200,
@@ -102,17 +104,21 @@ func TestCreateOrder_ServiceError(t *testing.T) {
 
 			// === Arrange ===
 			fixture := newApiFixture(t)
+			hullUUID := uuid.New()
+			engineUUID := uuid.New()
 
 			// === Expect ===
 			fixture.orderService.EXPECT().
-				CreateOrder(fixture.ctx, mock.Anything).
+				CreateOrder(fixture.ctx, mock.MatchedBy(func(in *order.CreateOrderIn) bool {
+					return in.HullUUID == hullUUID && in.EngineUUID == engineUUID
+				})).
 				Return(nil, testCase.serviceErr).
 				Once()
 
 			// === Act ===
 			response, err := fixture.api.CreateOrder(fixture.ctx, &orderv1.CreateOrderRequest{
-				HullUUID:   uuid.New(),
-				EngineUUID: uuid.New(),
+				HullUUID:   hullUUID,
+				EngineUUID: engineUUID,
 			})
 
 			// === Assert ===
