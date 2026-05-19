@@ -8,6 +8,7 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/jackc/pgx/v5/pgxpool"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 
@@ -17,6 +18,24 @@ import (
 const grpcAddress = "127.0.0.1:50051"
 
 func main() {
+	// Создаём подключение к БД через pgxpool.
+	ctx := context.Background()
+	inventoryDSN := "postgres://inventory-service-user:inventory-service-password@localhost:5433/inventory-service?sslmode=disable" //nolint:gosec // учебный проект
+
+	pool, err := pgxpool.New(ctx, inventoryDSN)
+	if err != nil {
+		slog.Error("создание пула соединений", "error", err)
+	}
+	defer pool.Close()
+
+	// Проверяем соединение
+	err = pool.Ping(ctx)
+	if err != nil {
+		slog.Error("проверка соединения с БД", "error", err)
+	}
+
+	slog.Info("подключение к PostgreSQL установлено")
+
 	var lc net.ListenConfig
 	listener, err := lc.Listen(context.Background(), "tcp", grpcAddress)
 	if err != nil {
@@ -26,7 +45,7 @@ func main() {
 	defer listener.Close()
 
 	grpcServer := grpc.NewServer(app.Interceptors()...)
-	app.RegisterServices(grpcServer)
+	app.RegisterServices(grpcServer, pool)
 
 	// Включаем reflection для postman/grpcurl
 	reflection.Register(grpcServer)

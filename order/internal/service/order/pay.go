@@ -31,7 +31,7 @@ func (s *orderService) PayOrder(ctx context.Context, in *PayOrderOrderIn) (*PayO
 	}
 
 	payOrderResponse, err := s.paymentClient.PayOrder(ctx, &paymentModel.PayOrderRequest{
-		OrderUuid:     order.OrderUUID,
+		OrderUuid:     order.UUID,
 		PaymentMethod: in.PaymentMethod,
 	})
 	if err != nil {

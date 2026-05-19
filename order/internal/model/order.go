@@ -11,6 +11,8 @@ type (
 	PaymentMethod string
 )
 
+type PartType string
+
 const (
 	OrderStatusPendingPayment OrderStatus = "PENDING_PAYMENT"
 	OrderStatusPaid           OrderStatus = "PAID"
@@ -23,15 +25,25 @@ const (
 	PaymentMethodInvestorMoney PaymentMethod = "INVESTOR_MONEY"
 )
 
+const (
+	PartTypeHull   PartType = "hull"
+	PartTypeEngine PartType = "engine"
+	PartTypeShield PartType = "shield"
+	PartTypeWeapon PartType = "weapon"
+)
+
 type Order struct {
-	OrderUUID       uuid.UUID
-	HullUUID        uuid.UUID
-	EngineUUID      uuid.UUID
-	ShieldUUID      *uuid.UUID
-	WeaponUUID      *uuid.UUID
+	UUID            uuid.UUID
+	OrderItems      []OrderItem
 	TotalPrice      int64
 	TransactionUUID *uuid.UUID
 	PaymentMethod   *PaymentMethod
 	Status          OrderStatus
 	CreatedAt       time.Time
+}
+
+type OrderItem struct {
+	PartUUID uuid.UUID
+	PartType PartType
+	Price    int64
 }

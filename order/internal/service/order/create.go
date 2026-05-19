@@ -56,12 +56,14 @@ func (s *orderService) CreateOrder(ctx context.Context, in *CreateOrderIn) (*Cre
 		return nil, fmt.Errorf("рассчитать стоимость заказа: %w", err)
 	}
 
+	orderItems, err := collectOrderItems(listPartsRes.Parts)
+	if err != nil {
+		return nil, fmt.Errorf("собрать элементы заказа: %w", err)
+	}
+
 	order := model.Order{
-		OrderUUID:       uuid.New(),
-		HullUUID:        in.HullUUID,
-		EngineUUID:      in.EngineUUID,
-		ShieldUUID:      in.ShieldUUID,
-		WeaponUUID:      in.WeaponUUID,
+		UUID:            uuid.New(),
+		OrderItems:      orderItems,
 		TotalPrice:      totalPrice,
 		TransactionUUID: nil,
 		PaymentMethod:   nil,
@@ -74,7 +76,7 @@ func (s *orderService) CreateOrder(ctx context.Context, in *CreateOrderIn) (*Cre
 	}
 
 	return &CreateOrderOut{
-		OrderUUID:  order.OrderUUID,
+		OrderUUID:  order.UUID,
 		TotalPrice: order.TotalPrice,
 	}, nil
 }
@@ -89,4 +91,31 @@ func calculateTotalPrice(listParts []inventoryModel.Part) (int64, error) {
 	}
 
 	return totalPrice, nil
+}
+
+func collectOrderItems(listParts []inventoryModel.Part) ([]model.OrderItem, error) {
+	var orderItems []model.OrderItem
+	for _, item := range listParts {
+		var partType model.PartType
+		switch item.PartType {
+		case inventoryModel.PART_TYPE_HULL:
+			partType = model.PartTypeHull
+		case inventoryModel.PART_TYPE_ENGINE:
+			partType = model.PartTypeEngine
+		case inventoryModel.PART_TYPE_SHIELD:
+			partType = model.PartTypeShield
+		case inventoryModel.PART_TYPE_WEAPON:
+			partType = model.PartTypeWeapon
+		default:
+			return nil, fmt.Errorf("неизвестный тип детали %s: %w", item.UUID, errs.ErrPartUnavailable)
+		}
+
+		orderItems = append(orderItems, model.OrderItem{
+			PartUUID: item.UUID,
+			PartType: partType,
+			Price:    item.Price,
+		})
+	}
+
+	return orderItems, nil
 }

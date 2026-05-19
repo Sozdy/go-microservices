@@ -79,7 +79,7 @@ tasks:
 
   setup:
     desc: "Устанавливает все инструменты"
-    deps: [formatters:install, golangci-lint:install, buf:install, proto:install-plugins, ogen:install]
+    deps: [formatters:install, golangci-lint:install, buf:install, proto:install-plugins, ogen:install, goose:install]
 
   format:
     desc: "Форматирует код (gofumpt + gci)"
@@ -297,39 +297,39 @@ tasks:
     deps: [ goose:install ]
     dotenv: [ 'order.env' ]
     cmds:
-      - '{{.GOOSE}} -dir {{.MIGRATIONS_DIR}} postgres "$DB_URI" up'
+      - '{{.GOOSE}} -dir "$MIGRATIONS_DIR" postgres "$DB_URI" up'
 
   migrate:order:down:
     desc: "Откатывает последнюю миграцию Order-сервиса"
     deps: [ goose:install ]
     dotenv: [ 'order.env' ]
     cmds:
-      - '{{.GOOSE}} -dir {{.MIGRATIONS_DIR}} postgres "$DB_URI" down'
+      - '{{.GOOSE}} -dir "$MIGRATIONS_DIR" postgres "$DB_URI" down'
 
   migrate:order:status:
     desc: "Показывает статус миграций Order-сервиса"
     deps: [ goose:install ]
     dotenv: [ 'order.env' ]
     cmds:
-      - '{{.GOOSE}} -dir {{.MIGRATIONS_DIR}} postgres "$DB_URI" status'
+      - '{{.GOOSE}} -dir "$MIGRATIONS_DIR" postgres "$DB_URI" status'
 
   migrate:inventory:up:
     desc: "Применяет все миграции Inventory-сервиса"
     deps: [ goose:install ]
     dotenv: [ 'inventory.env' ]
     cmds:
-      - '{{.GOOSE}} -dir {{.MIGRATIONS_DIR}} postgres "$DB_URI" up'
+      - '{{.GOOSE}} -dir "$MIGRATIONS_DIR" postgres "$DB_URI" up'
 
   migrate:inventory:down:
     desc: "Откатывает последнюю миграцию Inventory-сервиса"
     deps: [ goose:install ]
     dotenv: [ 'inventory.env' ]
     cmds:
-      - '{{.GOOSE}} -dir {{.MIGRATIONS_DIR}} postgres "$DB_URI" down'
+      - '{{.GOOSE}} -dir "$MIGRATIONS_DIR" postgres "$DB_URI" down'
 
   migrate:inventory:status:
     desc: "Показывает статус миграций Inventory-сервиса"
     deps: [ goose:install ]
     dotenv: [ 'inventory.env' ]
     cmds:
-      - '{{.GOOSE}} -dir {{.MIGRATIONS_DIR}} postgres "$DB_URI" status'
+      - '{{.GOOSE}} -dir "$MIGRATIONS_DIR" postgres "$DB_URI" status'

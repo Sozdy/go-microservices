@@ -17,8 +17,8 @@ func TestCancelOrder_Success(t *testing.T) {
 
 	orderUUID := uuid.New()
 	storedOrder := &model.Order{
-		OrderUUID: orderUUID,
-		Status:    model.OrderStatusPendingPayment,
+		UUID:   orderUUID,
+		Status: model.OrderStatusPendingPayment,
 	}
 
 	// === Arrange ===
@@ -31,7 +31,7 @@ func TestCancelOrder_Success(t *testing.T) {
 		Once()
 	fixture.orderRepository.EXPECT().
 		Update(fixture.ctx, mock.MatchedBy(func(order model.Order) bool {
-			return order.OrderUUID == orderUUID && order.Status == model.OrderStatusCancelled
+			return order.UUID == orderUUID && order.Status == model.OrderStatusCancelled
 		})).
 		Return(nil).
 		Once()
@@ -49,8 +49,8 @@ func TestCancelOrder_StatusConflict(t *testing.T) {
 
 	orderUUID := uuid.New()
 	storedOrder := &model.Order{
-		OrderUUID: orderUUID,
-		Status:    model.OrderStatusPaid,
+		UUID:   orderUUID,
+		Status: model.OrderStatusPaid,
 	}
 
 	// === Arrange ===
@@ -77,8 +77,8 @@ func TestCancelOrder_UpdateError(t *testing.T) {
 
 	orderUUID := uuid.New()
 	storedOrder := &model.Order{
-		OrderUUID: orderUUID,
-		Status:    model.OrderStatusPendingPayment,
+		UUID:   orderUUID,
+		Status: model.OrderStatusPendingPayment,
 	}
 	updateErr := errors.New("сбой БД при обновлении")
 

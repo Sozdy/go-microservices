@@ -10,6 +10,9 @@ import (
 	"syscall"
 	"time"
 
+	trmpgx "github.com/avito-tech/go-transaction-manager/drivers/pgxv5/v2"
+	"github.com/avito-tech/go-transaction-manager/trm/v2/manager"
+	"github.com/jackc/pgx/v5/pgxpool"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/keepalive"
@@ -69,7 +72,30 @@ func main() {
 
 	inventoryClient := inventoryv1.NewInventoryServiceClient(inventoryConn)
 
-	handler, err := app.NewHTTPHandler(inventoryClient, paymentClient)
+	// Создаём подключение к БД через pgxpool.
+	ctx := context.Background()
+	orderDSN := "postgres://order-service-user:order-service-password@localhost:5432/order-service?sslmode=disable" //nolint:gosec // учебный проект
+	pool, err := pgxpool.New(ctx, orderDSN)
+	if err != nil {
+		slog.Error("создание пула соединений", "error", err)
+	}
+	defer pool.Close()
+
+	// Проверяем соединение
+	err = pool.Ping(ctx)
+	if err != nil {
+		slog.Error("проверка соединения с БД", "error", err)
+	}
+
+	slog.Info("подключение к PostgreSQL установлено")
+
+	// Создаём Transaction Manager для pgx
+	txManager, err := manager.New(trmpgx.NewDefaultFactory(pool))
+	if err != nil {
+		slog.Error("создание transaction manager", "error", err)
+	}
+
+	handler, err := app.NewHTTPHandler(pool, txManager, inventoryClient, paymentClient)
 	if err != nil {
 		panic(err)
 	}

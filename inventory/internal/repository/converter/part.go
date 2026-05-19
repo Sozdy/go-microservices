@@ -1,8 +1,6 @@
 package converter
 
 import (
-	"time"
-
 	"github.com/Sozdy/go-microservices/inventory/internal/model"
 	"github.com/Sozdy/go-microservices/inventory/internal/repository/record"
 )
@@ -12,10 +10,10 @@ func PartToRecord(part *model.Part) *record.Part {
 		UUID:          part.UUID,
 		Name:          part.Name,
 		Description:   part.Description,
+		PartType:      string(part.PartType),
 		Price:         part.Price,
-		PartType:      (string)(part.PartType),
 		StockQuantity: part.StockQuantity,
-		CreatedAt:     part.CreatedAt.Unix(),
+		CreatedAt:     part.CreatedAt,
 	}
 }
 
@@ -24,9 +22,9 @@ func PartToModel(part *record.Part) *model.Part {
 		UUID:          part.UUID,
 		Name:          part.Name,
 		Description:   part.Description,
+		PartType:      model.PartType(part.PartType),
 		Price:         part.Price,
-		PartType:      (model.PartType)(part.PartType),
 		StockQuantity: part.StockQuantity,
-		CreatedAt:     time.Unix(part.CreatedAt, 0),
+		CreatedAt:     part.CreatedAt,
 	}
 }

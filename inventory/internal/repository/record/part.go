@@ -1,11 +1,13 @@
 package record
 
+import "time"
+
 type Part struct {
-	UUID          string
-	Name          string
-	Description   string
-	Price         int64 // В копейках
-	PartType      string
-	StockQuantity int64
-	CreatedAt     int64
+	UUID          string    `db:"uuid"`
+	Name          string    `db:"name"`
+	Description   string    `db:"description"`
+	PartType      string    `db:"part_type"`
+	Price         int64     `db:"price"`
+	StockQuantity int64     `db:"stock_quantity"`
+	CreatedAt     time.Time `db:"created_at"`
 }

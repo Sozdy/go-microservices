@@ -18,8 +18,8 @@ func TestPayOrder_Success(t *testing.T) {
 	orderUUID := uuid.New()
 	transactionUUID := uuid.New()
 	storedOrder := &model.Order{
-		OrderUUID: orderUUID,
-		Status:    model.OrderStatusPendingPayment,
+		UUID:   orderUUID,
+		Status: model.OrderStatusPendingPayment,
 	}
 
 	// === Arrange ===
@@ -59,8 +59,8 @@ func TestPayOrder_StatusConflict(t *testing.T) {
 
 	orderUUID := uuid.New()
 	storedOrder := &model.Order{
-		OrderUUID: orderUUID,
-		Status:    model.OrderStatusPaid,
+		UUID:   orderUUID,
+		Status: model.OrderStatusPaid,
 	}
 
 	// === Arrange ===

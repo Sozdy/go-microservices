@@ -3,6 +3,7 @@ package app
 import (
 	"time"
 
+	"github.com/jackc/pgx/v5/pgxpool"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/keepalive"
 
@@ -41,12 +42,12 @@ func Interceptors() []grpc.ServerOption {
 	}
 }
 
-func RegisterServices(server *grpc.Server) {
+func RegisterServices(server *grpc.Server, inventoryPool *pgxpool.Pool) {
 	inventoryv1.RegisterInventoryServiceServer(
 		server,
 		v1.NewApi(
 			partService.NewPartService(
-				part.NewRepository(),
+				part.NewRepository(inventoryPool),
 			),
 		),
 	)

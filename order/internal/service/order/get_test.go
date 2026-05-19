@@ -15,10 +15,12 @@ func TestGetOrder_Success(t *testing.T) {
 
 	orderUUID := uuid.New()
 	storedOrder := &model.Order{
-		OrderUUID:  orderUUID,
-		HullUUID:   uuid.New(),
-		EngineUUID: uuid.New(),
-		Status:     model.OrderStatusPendingPayment,
+		UUID: orderUUID,
+		OrderItems: []model.OrderItem{
+			{PartUUID: uuid.New(), PartType: model.PartTypeHull},
+			{PartUUID: uuid.New(), PartType: model.PartTypeEngine},
+		},
+		Status: model.OrderStatusPendingPayment,
 	}
 
 	// === Arrange ===
