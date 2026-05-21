@@ -5,6 +5,7 @@ import (
 	"log/slog"
 	"net/http"
 
+	"github.com/avito-tech/go-transaction-manager/trm/v2/manager"
 	"github.com/jackc/pgx/v5/pgxpool"
 
 	"github.com/Sozdy/go-microservices/order/internal/api"
@@ -18,12 +19,12 @@ import (
 	protopaymentv1 "github.com/Sozdy/go-microservices/shared/pkg/proto/payment/v1"
 )
 
-func NewHTTPHandler(_ *pgxpool.Pool, inventoryGRPC protoinventoryv1.InventoryServiceClient, paymentGRPC protopaymentv1.PaymentServiceClient) (http.Handler, error) {
+func NewHTTPHandler(pool *pgxpool.Pool, txManager *manager.Manager, inventoryGRPC protoinventoryv1.InventoryServiceClient, paymentGRPC protopaymentv1.PaymentServiceClient) (http.Handler, error) {
 	orderApi := v1.NewApi(
 		order.NewOrderService(
 			inventoryclient.NewClient(inventoryGRPC),
 			paymentclient.NewClient(paymentGRPC),
-			orderRepo.NewRepository(),
+			orderRepo.NewRepository(pool, txManager),
 		),
 	)
 

@@ -31,15 +31,15 @@ func TestCreateOrder_Success(t *testing.T) {
 		ListParts(fixture.ctx, mock.Anything).
 		Return(&inventoryModel.ListPartsResponse{
 			Parts: []inventoryModel.Part{
-				{UUID: hullUUID, Price: 50, StockQuantity: 1},
-				{UUID: engineUUID, Price: 70, StockQuantity: 2},
+				{UUID: hullUUID, PartType: inventoryModel.PART_TYPE_HULL, Price: 50, StockQuantity: 1},
+				{UUID: engineUUID, PartType: inventoryModel.PART_TYPE_ENGINE, Price: 70, StockQuantity: 2},
 			},
 		}, nil).
 		Once()
 	fixture.orderRepository.EXPECT().
 		Create(fixture.ctx, mock.MatchedBy(func(order model.Order) bool {
-			return order.HullUUID == hullUUID &&
-				order.EngineUUID == engineUUID &&
+			return hasItem(order.OrderItems, hullUUID, model.PartTypeHull) &&
+				hasItem(order.OrderItems, engineUUID, model.PartTypeEngine) &&
 				order.TotalPrice == 120 &&
 				order.Status == model.OrderStatusPendingPayment
 		})).
@@ -86,6 +86,15 @@ func TestCreateOrder_PartUnavailable(t *testing.T) {
 	require.Error(t, err)
 	require.Nil(t, out)
 	require.ErrorIs(t, err, errs.ErrPartUnavailable)
+}
+
+func hasItem(items []model.OrderItem, partUUID uuid.UUID, partType model.PartType) bool {
+	for _, item := range items {
+		if item.PartUUID == partUUID && item.PartType == partType {
+			return true
+		}
+	}
+	return false
 }
 
 func TestCreateOrder_InventoryClientError(t *testing.T) {

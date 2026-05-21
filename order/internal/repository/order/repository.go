@@ -1,20 +1,26 @@
 package order
 
 import (
-	"sync"
+	"context"
 
-	"github.com/google/uuid"
-
-	"github.com/Sozdy/go-microservices/order/internal/repository/record"
+	trmpgx "github.com/avito-tech/go-transaction-manager/drivers/pgxv5/v2"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-type repo struct {
-	mu     sync.RWMutex
-	orders map[uuid.UUID]record.Order
+type TxManager interface {
+	Do(ctx context.Context, fn func(ctx context.Context) error) error
 }
 
-func NewRepository() *repo {
+type repo struct {
+	pool      *pgxpool.Pool
+	getter    *trmpgx.CtxGetter
+	txManager TxManager
+}
+
+func NewRepository(pool *pgxpool.Pool, txManager TxManager) *repo {
 	return &repo{
-		orders: make(map[uuid.UUID]record.Order),
+		pool:      pool,
+		getter:    trmpgx.DefaultCtxGetter,
+		txManager: txManager,
 	}
 }

@@ -9,12 +9,30 @@ import (
 
 // OrderToDto преобразует model.Order в openapi-DTO для ответа клиенту.
 func OrderToDto(o *model.Order) *orderv1.OrderDto {
+	var hullUUID, engineUUID uuid.UUID
+	var shieldUUID, weaponUUID *uuid.UUID
+
+	for _, item := range o.OrderItems {
+		switch item.PartType {
+		case model.PartTypeHull:
+			hullUUID = item.PartUUID
+		case model.PartTypeEngine:
+			engineUUID = item.PartUUID
+		case model.PartTypeShield:
+			id := item.PartUUID
+			shieldUUID = &id
+		case model.PartTypeWeapon:
+			id := item.PartUUID
+			weaponUUID = &id
+		}
+	}
+
 	return &orderv1.OrderDto{
-		OrderUUID:       o.OrderUUID,
-		HullUUID:        o.HullUUID,
-		EngineUUID:      o.EngineUUID,
-		ShieldUUID:      uuidPtrToOptNil(o.ShieldUUID),
-		WeaponUUID:      uuidPtrToOptNil(o.WeaponUUID),
+		OrderUUID:       o.UUID,
+		HullUUID:        hullUUID,
+		EngineUUID:      engineUUID,
+		ShieldUUID:      uuidPtrToOptNil(shieldUUID),
+		WeaponUUID:      uuidPtrToOptNil(weaponUUID),
 		TotalPrice:      o.TotalPrice,
 		TransactionUUID: uuidPtrToOptNil(o.TransactionUUID),
 		PaymentMethod:   paymentMethodPtrToOptNil(o.PaymentMethod),
