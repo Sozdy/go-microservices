@@ -3,8 +3,10 @@ package main
 import (
 	"context"
 	"errors"
+	"fmt"
 	"log/slog"
 	"net"
+	"os"
 	"os/signal"
 	"syscall"
 
@@ -17,11 +19,17 @@ import (
 const grpcAddress = "127.0.0.1:50052"
 
 func main() {
+	if err := run(); err != nil {
+		slog.Error("не удалось запустить PaymentService", "error", err)
+		os.Exit(1)
+	}
+}
+
+func run() error {
 	var lc net.ListenConfig
 	listener, err := lc.Listen(context.Background(), "tcp", grpcAddress)
 	if err != nil {
-		slog.Error("не удалось создать listener", "error", err)
-		panic(err)
+		return fmt.Errorf("создание listener: %w", err)
 	}
 	defer listener.Close()
 
@@ -48,9 +56,9 @@ func main() {
 		slog.Info("🛑 остановка gRPC сервера")
 		grpcServer.GracefulStop()
 		slog.Info("✅ сервер остановлен")
+		return nil
 
 	case err := <-serveErrCh:
-		slog.Error("🛑 gRPC сервер завершился с ошибкой", "error", err)
-		return
+		return fmt.Errorf("gRPC сервер завершился с ошибкой: %w", err)
 	}
 }

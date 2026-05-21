@@ -3,9 +3,11 @@ package main
 import (
 	"context"
 	"errors"
+	"fmt"
 	"log/slog"
 	"net"
 	"net/http"
+	"os"
 	"os/signal"
 	"syscall"
 	"time"
@@ -40,6 +42,13 @@ const (
 )
 
 func main() {
+	if err := run(); err != nil {
+		slog.Error("не удалось запустить OrderService", "error", err)
+		os.Exit(1)
+	}
+}
+
+func run() error {
 	paymentConn, err := grpc.NewClient(
 		paymentServiceAddress,
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
@@ -50,7 +59,7 @@ func main() {
 		}),
 	)
 	if err != nil {
-		slog.Error("не удалось подключиться к PaymentService", "error", err)
+		return fmt.Errorf("подключение к PaymentService: %w", err)
 	}
 	defer paymentConn.Close()
 
@@ -66,7 +75,7 @@ func main() {
 		}),
 	)
 	if err != nil {
-		slog.Error("не удалось подключиться к InventoryService", "error", err)
+		return fmt.Errorf("подключение к InventoryService: %w", err)
 	}
 	defer inventoryConn.Close()
 
@@ -77,14 +86,14 @@ func main() {
 	orderDSN := "postgres://order-service-user:order-service-password@localhost:5432/order-service?sslmode=disable" //nolint:gosec // учебный проект
 	pool, err := pgxpool.New(ctx, orderDSN)
 	if err != nil {
-		slog.Error("создание пула соединений", "error", err)
+		return fmt.Errorf("создание пула соединений: %w", err)
 	}
 	defer pool.Close()
 
 	// Проверяем соединение
 	err = pool.Ping(ctx)
 	if err != nil {
-		slog.Error("проверка соединения с БД", "error", err)
+		return fmt.Errorf("проверка соединения с БД: %w", err)
 	}
 
 	slog.Info("подключение к PostgreSQL установлено")
@@ -92,12 +101,12 @@ func main() {
 	// Создаём Transaction Manager для pgx
 	txManager, err := manager.New(trmpgx.NewDefaultFactory(pool))
 	if err != nil {
-		slog.Error("создание transaction manager", "error", err)
+		return fmt.Errorf("создание transaction manager: %w", err)
 	}
 
 	handler, err := app.NewHTTPHandler(pool, txManager, inventoryClient, paymentClient)
 	if err != nil {
-		panic(err)
+		return fmt.Errorf("создание HTTP handler: %w", err)
 	}
 
 	server := &http.Server{
@@ -112,7 +121,7 @@ func main() {
 	var lc net.ListenConfig
 	listener, err := lc.Listen(context.Background(), "tcp", httpAddress)
 	if err != nil {
-		slog.Error("не удалось создать listener", "error", err)
+		return fmt.Errorf("создание listener: %w", err)
 	}
 	defer listener.Close()
 
@@ -140,9 +149,9 @@ func main() {
 		}
 
 		slog.Info("✅ сервер остановлен")
+		return nil
 
 	case err := <-serveErrCh:
-		slog.Error("🛑 HTTP сервер завершился с ошибкой", "error", err)
-		return
+		return fmt.Errorf("HTTP сервер завершился с ошибкой: %w", err)
 	}
 }

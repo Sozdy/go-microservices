@@ -9,10 +9,10 @@ import (
 type PartType string
 
 const (
-	PartTypeHull   PartType = "hull"
-	PartTypeEngine PartType = "engine"
-	PartTypeShield PartType = "shield"
-	PartTypeWeapon PartType = "weapon"
+	PartTypeHull   PartType = "HULL"
+	PartTypeEngine PartType = "ENGINE"
+	PartTypeShield PartType = "SHIELD"
+	PartTypeWeapon PartType = "WEAPON"
 )
 
 type Order struct {
